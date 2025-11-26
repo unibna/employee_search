@@ -7,6 +7,7 @@ from app.schemas.employee import Employee, ListEmployeeFilters
 from app.schemas.pagination import PaginatedResponse
 from app.operations.employee import get_employees
 from app.models.employee import EmployeeStatus
+from app.api.deps.rate_limit_deps import rate_limit_dependency
 
 router = APIRouter()
 
@@ -26,6 +27,7 @@ def list_employees(
     locations: List[str] = Query(default=[], alias="locations[]"),
     search: str | None = Query(None),
     session: Session = Depends(get_session),
+    _: bool = Depends(rate_limit_dependency),
 ):
     filters = ListEmployeeFilters(
         page=page,
