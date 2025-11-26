@@ -2,7 +2,6 @@ import json
 import random
 from pathlib import Path
 from sqlmodel import Session, select, func
-from sqlalchemy.orm import bulk_insert_mappings
 from typing import Dict, List
 from faker import Faker
 
