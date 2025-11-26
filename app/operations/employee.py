@@ -13,21 +13,21 @@ def get_employees(
     base_query = select(Employee)
     count_query = select(func.count(Employee.id))
     
-    if filters.position:
-        base_query = base_query.where(Employee.position == filters.position)
-        count_query = count_query.where(Employee.position == filters.position)
+    if filters.positions:
+        base_query = base_query.where(Employee.position.in_(filters.positions))
+        count_query = count_query.where(Employee.position.in_(filters.positions))
 
-    if filters.location:
-        base_query = base_query.where(Employee.location == filters.location)
-        count_query = count_query.where(Employee.location == filters.location)
+    if filters.locations:
+        base_query = base_query.where(Employee.location.in_(filters.locations))
+        count_query = count_query.where(Employee.location.in_(filters.locations))
 
-    if filters.company_id:
-        base_query = base_query.where(Employee.company_id == filters.company_id)
-        count_query = count_query.where(Employee.company_id == filters.company_id)
+    if filters.company_ids:
+        base_query = base_query.where(Employee.company_id.in_(filters.company_ids))
+        count_query = count_query.where(Employee.company_id.in_(filters.company_ids))
 
-    if filters.department_id:
-        base_query = base_query.where(Employee.department_id == filters.department_id)
-        count_query = count_query.where(Employee.department_id == filters.department_id)
+    if filters.department_ids:
+        base_query = base_query.where(Employee.department_id.in_(filters.department_ids))
+        count_query = count_query.where(Employee.department_id.in_(filters.department_ids))
 
     if filters.statuses:
         base_query = base_query.where(Employee.status.in_(filters.statuses))

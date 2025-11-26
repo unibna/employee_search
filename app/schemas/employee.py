@@ -21,9 +21,9 @@ class ListEmployeeFilters(BaseModel):
     page: int = 1
     page_size: int = 10
     statuses: List[EmployeeStatus] = []
-    company_id: str | None = None
-    department_id: str | None = None
-    position: str | None = None
-    location: str | None = None
+    company_ids: List[int] = []
+    department_ids: List[int] = []
+    positions: List[str] = []
+    locations: List[str] = []
     search: str | None = None
 
