@@ -3,6 +3,8 @@ from sqlalchemy import func as sql_func
 from typing import List, Tuple
 
 from app.models.employee import Employee
+from app.models.company import Company
+from app.models.department import Department
 from app.schemas.employee import ListEmployeeFilters
 
 
@@ -10,7 +12,15 @@ def get_employees(
     session: Session,
     filters: ListEmployeeFilters
 ) -> Tuple[int, List[Employee]]:
-    base_query = select(Employee)
+    base_query = (
+        select(
+            *Employee.__table__.columns,
+            Company.name.label("company_name"),
+            Department.name.label("department_name"),
+        )
+        .join(Company, Employee.company_id == Company.id)
+        .join(Department, Employee.department_id == Department.id)
+    )
     count_query = select(func.count(Employee.id))
     
     if filters.positions:
