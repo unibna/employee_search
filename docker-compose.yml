@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.yml
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./employee_search.db
+      - API_V1_PREFIX=/api/v1
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+    working_dir: /app
+    restart: unless-stopped
+
