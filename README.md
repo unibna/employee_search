@@ -119,3 +119,19 @@ Or if using Docker:
 ```bash
 docker-compose exec app python -m app.tasks.set_up_data
 ```
+
+## Demo
+
+1. List employees by default
+
+<img width="1997" height="1268" alt="image" src="https://github.com/user-attachments/assets/aac2fdb3-7c75-4b3f-9f94-909d38f7923b" />
+
+2. List employees with filters
+
+<img width="1996" height="1055" alt="image" src="https://github.com/user-attachments/assets/76630b75-0742-42f5-946a-0c3ec9922ebf" />
+
+3. Reach rate limit
+
+<img width="1993" height="1005" alt="image" src="https://github.com/user-attachments/assets/a15dceef-f29c-471a-993b-c46a4f27a80c" />
+
+
