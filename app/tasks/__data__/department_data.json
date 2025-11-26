@@ -1,0 +1,128 @@
+[
+  {
+    "name": "Engineering",
+    "company_name": "TechCorp Singapore",
+    "organisation_name": "TechCorp Global"
+  },
+  {
+    "name": "Product Management",
+    "company_name": "TechCorp Singapore",
+    "organisation_name": "TechCorp Global"
+  },
+  {
+    "name": "Sales & Marketing",
+    "company_name": "TechCorp Singapore",
+    "organisation_name": "TechCorp Global"
+  },
+  {
+    "name": "Human Resources",
+    "company_name": "TechCorp Singapore",
+    "organisation_name": "TechCorp Global"
+  },
+  {
+    "name": "Finance & Accounting",
+    "company_name": "TechCorp Singapore",
+    "organisation_name": "TechCorp Global"
+  },
+  {
+    "name": "Engineering",
+    "company_name": "TechCorp Malaysia",
+    "organisation_name": "TechCorp Global"
+  },
+  {
+    "name": "Operations",
+    "company_name": "TechCorp Malaysia",
+    "organisation_name": "TechCorp Global"
+  },
+  {
+    "name": "Customer Support",
+    "company_name": "TechCorp Malaysia",
+    "organisation_name": "TechCorp Global"
+  },
+  {
+    "name": "Investment Banking",
+    "company_name": "Finance Solutions Singapore",
+    "organisation_name": "Finance Solutions Inc"
+  },
+  {
+    "name": "Risk Management",
+    "company_name": "Finance Solutions Singapore",
+    "organisation_name": "Finance Solutions Inc"
+  },
+  {
+    "name": "Compliance",
+    "company_name": "Finance Solutions Singapore",
+    "organisation_name": "Finance Solutions Inc"
+  },
+  {
+    "name": "Clinical Services",
+    "company_name": "Healthcare Systems Singapore",
+    "organisation_name": "Healthcare Systems Ltd"
+  },
+  {
+    "name": "Medical Research",
+    "company_name": "Healthcare Systems Singapore",
+    "organisation_name": "Healthcare Systems Ltd"
+  },
+  {
+    "name": "Retail Operations",
+    "company_name": "Retail Dynamics Singapore",
+    "organisation_name": "Retail Dynamics Group"
+  },
+  {
+    "name": "Supply Chain",
+    "company_name": "Retail Dynamics Singapore",
+    "organisation_name": "Retail Dynamics Group"
+  },
+  {
+    "name": "Production",
+    "company_name": "Manufacturing Excellence Singapore",
+    "organisation_name": "Manufacturing Excellence Co"
+  },
+  {
+    "name": "Quality Assurance",
+    "company_name": "Manufacturing Excellence Singapore",
+    "organisation_name": "Manufacturing Excellence Co"
+  },
+  {
+    "name": "Academic Affairs",
+    "company_name": "Education Services Singapore",
+    "organisation_name": "Education Services Network"
+  },
+  {
+    "name": "Student Services",
+    "company_name": "Education Services Singapore",
+    "organisation_name": "Education Services Network"
+  },
+  {
+    "name": "Fleet Management",
+    "company_name": "Logistics & Transport Singapore",
+    "organisation_name": "Logistics & Transport Corp"
+  },
+  {
+    "name": "Distribution",
+    "company_name": "Logistics & Transport Singapore",
+    "organisation_name": "Logistics & Transport Corp"
+  },
+  {
+    "name": "Power Generation",
+    "company_name": "Energy & Utilities Singapore",
+    "organisation_name": "Energy & Utilities Holdings"
+  },
+  {
+    "name": "Content Production",
+    "company_name": "Media & Communications Singapore",
+    "organisation_name": "Media & Communications Group"
+  },
+  {
+    "name": "Property Development",
+    "company_name": "Real Estate Development Singapore",
+    "organisation_name": "Real Estate Development Ltd"
+  },
+  {
+    "name": "Property Management",
+    "company_name": "Real Estate Development Singapore",
+    "organisation_name": "Real Estate Development Ltd"
+  }
+]
+

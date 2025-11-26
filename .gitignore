@@ -1,0 +1,13 @@
+# Agents
+agents
+
+# Virtual environment
+venv
+
+# Environment variables
+.env
+
+# Database
+*.db
+*.db-shm
+*.db-wal

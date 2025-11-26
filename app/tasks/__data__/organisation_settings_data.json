@@ -1,0 +1,22 @@
+[
+  {
+    "organisation_name": "TechCorp Global",
+    "settings": {
+      "employee_display_columns": [
+        "position",
+        "location"
+      ]
+    }
+  },
+  {
+    "organisation_name": "Finance Solutions Inc",
+    "settings": {
+      "employee_display_columns": [
+        "position",
+        "location",
+        "department_name",
+        "company_name"
+      ]
+    }
+  }
+]
