@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 from app.models.employee import EmployeeStatus
 
@@ -19,7 +20,7 @@ class Employee(BaseModel):
 class ListEmployeeFilters(BaseModel):
     page: int = 1
     page_size: int = 10
-    status: EmployeeStatus | None = None
+    statuses: List[EmployeeStatus] = []
     company_id: str | None = None
     department_id: str | None = None
     position: str | None = None
