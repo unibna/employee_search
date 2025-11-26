@@ -11,3 +11,7 @@ venv
 *.db
 *.db-shm
 *.db-wal
+
+# Pycache
+__pycache__/
+*.pyc
