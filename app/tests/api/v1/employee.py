@@ -1,26 +1,21 @@
-import pytest
-from fastapi.testclient import TestClient
-from fastapi import Request
-from sqlmodel import Session, create_engine, SQLModel
-from sqlalchemy import event
+import os
+import tempfile
 
-from app.main import app
-from app.models.employee import Employee, EmployeeStatus
-from app.models.company import Company
-from app.models.department import Department
-from app.models.organisation import Organisation
+import pytest
+from fastapi import Request
+from fastapi.testclient import TestClient
+from sqlalchemy import event
+from sqlmodel import Session, create_engine, SQLModel
+
+from app.api.deps.rate_limit_deps import rate_limit_dependency
 from app.core.database import get_session
+from app.main import app
+from app.models import Company, Department, Employee, Organisation
+from app.models.employee import EmployeeStatus
 
 
 @pytest.fixture(scope="function")
 def test_db():
-    """Create an in-memory SQLite database for testing.
-    
-    Uses a file-based database to avoid connection issues with in-memory databases.
-    """
-    import tempfile
-    import os
-    
     # Use a temporary file for the database to avoid connection issues
     db_fd, db_path = tempfile.mkstemp(suffix='.db')
     os.close(db_fd)
@@ -34,15 +29,10 @@ def test_db():
         cursor.execute("PRAGMA synchronous=NORMAL")
         cursor.close()
     
-    # Import all models to ensure they're registered
-    from app.models import employee, company, department, organisation
-    
-    # Create all tables
     SQLModel.metadata.create_all(engine)
     yield engine
     SQLModel.metadata.drop_all(engine)
     engine.dispose()
-    # Clean up temporary file
     if os.path.exists(db_path):
         os.unlink(db_path)
 
@@ -108,17 +98,14 @@ def test_data(session):
 
 @pytest.fixture(scope="function")
 def client(test_db, test_data):
-    """Create a test client with overridden database session."""
-    # Override get_session to create a new session from test_db for each request
-    # This handles thread safety issues with SQLite
+    SQLModel.metadata.create_all(test_db)
+    
     def override_get_session():
         with Session(test_db) as session:
             yield session
     
     app.dependency_overrides[get_session] = override_get_session
-    
-    # Override rate limiter to allow all requests in tests
-    from app.api.deps.rate_limit_deps import rate_limit_dependency
+
     async def override_rate_limit(request: Request):
         return True
     app.dependency_overrides[rate_limit_dependency] = override_rate_limit
@@ -142,14 +129,13 @@ class TestListEmployeesEndpoint:
         assert len(data["data"]) == 3
 
     def test_combined_filters(self, client, test_data):
-        """Test combining multiple filters."""
         company_id = test_data["companies"][0].id
         company_name = test_data["companies"][0].name
         response = client.get(
-            f"/api/v1/employees"
-            f"?statuses[]=ACTIVE"
+            "/api/v1/employees"
+            "?statuses[]=ACTIVE"
             f"&company_ids[]={company_id}"
-            f"&locations[]=Singapore"
+            "&locations[]=Singapore"
         )
         data = response.json()
         
@@ -160,7 +146,6 @@ class TestListEmployeesEndpoint:
         assert emp["location"] == "Singapore"
     
     def test_empty_result(self, client, test_data):
-        """Test filter that returns no results."""
         response = client.get("/api/v1/employees?statuses[]=TERMINATED")
         data = response.json()
         
@@ -169,18 +154,15 @@ class TestListEmployeesEndpoint:
         assert data["total_pages"] == 0
     
     def test_response_structure(self, client, test_data):
-        """Test response structure matches PaginatedResponse schema."""
         response = client.get("/api/v1/employees")
         data = response.json()
         
-        # Check top-level fields
         assert isinstance(data["page"], int)
         assert isinstance(data["page_size"], int)
         assert isinstance(data["total"], int)
         assert isinstance(data["total_pages"], int)
         assert isinstance(data["data"], list)
         
-        # Check employee structure
         if data["data"]:
             emp = data["data"][0]
             assert "id" in emp

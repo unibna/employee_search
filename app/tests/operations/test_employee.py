@@ -10,14 +10,10 @@ from app.models.organisation import Organisation
 from app.schemas.employee import ListEmployeeFilters
 
 
-# Create in-memory SQLite database for testing
 @pytest.fixture(scope="function")
 def test_db():
-    """Create an in-memory SQLite database for testing."""
-    # Use in-memory database
     engine = create_engine("sqlite:///:memory:", echo=False)
     
-    # Enable WAL mode for SQLite
     @event.listens_for(engine, "connect")
     def set_sqlite_pragma(dbapi_conn, connection_record):
         cursor = dbapi_conn.cursor()
@@ -25,19 +21,16 @@ def test_db():
         cursor.execute("PRAGMA synchronous=NORMAL")
         cursor.close()
     
-    # Create all tables
     SQLModel.metadata.create_all(engine)
     
     yield engine
     
-    # Cleanup
     SQLModel.metadata.drop_all(engine)
     engine.dispose()
 
 
 @pytest.fixture(scope="function")
 def session(test_db):
-    """Create a database session for testing."""
     with Session(test_db) as session:
         yield session
         session.rollback()
@@ -45,7 +38,6 @@ def session(test_db):
 
 @pytest.fixture(scope="function")
 def test_organisation(session):
-    """Create a test organisation."""
     org = Organisation(name="Test Organisation")
     session.add(org)
     session.commit()
@@ -55,7 +47,6 @@ def test_organisation(session):
 
 @pytest.fixture(scope="function")
 def test_companies(session, test_organisation):
-    """Create test companies."""
     company1 = Company(name="Company A", organisation_id=test_organisation.id)
     company2 = Company(name="Company B", organisation_id=test_organisation.id)
     company3 = Company(name="Company C", organisation_id=test_organisation.id)
@@ -71,7 +62,6 @@ def test_companies(session, test_organisation):
 
 @pytest.fixture(scope="function")
 def test_departments(session, test_organisation, test_companies):
-    """Create test departments."""
     dept1 = Department(
         name="Engineering",
         company_id=test_companies[0].id,
@@ -99,7 +89,6 @@ def test_departments(session, test_organisation, test_companies):
 
 @pytest.fixture(scope="function")
 def test_employees(session, test_organisation, test_companies, test_departments):
-    """Create test employees with various attributes."""
     employees = [
         Employee(
             first_name="John",
@@ -172,24 +161,14 @@ def test_employees(session, test_organisation, test_companies, test_departments)
 
 
 class TestGetEmployees:
-    """Test suite for get_employees operation."""
-    
     def test_get_all_employees(self, session, test_employees):
-        """Test retrieving all employees without filters.
-        
-        Note: Only 4 employees are returned because the operation uses INNER JOIN
-        on Department, which excludes employees without departments (Charlie Brown).
-        """
         filters = ListEmployeeFilters(page=1, page_size=10)
         total, employees = get_employees(session, filters)
         
-        # Note: count_query doesn't have joins, so it counts all 5
-        # but base_query only returns 4 (excludes employees without departments)
-        assert total == 5  # Count includes all employees
-        assert len(employees) == 4  # Results exclude employees without departments
+        assert total == 5
+        assert len(employees) == 4
     
     def test_pagination_first_page(self, session, test_employees):
-        """Test pagination - first page."""
         filters = ListEmployeeFilters(page=1, page_size=2)
         total, employees = get_employees(session, filters)
         
@@ -197,7 +176,6 @@ class TestGetEmployees:
         assert len(employees) == 2
     
     def test_pagination_out_of_range(self, session, test_employees):
-        """Test pagination - page beyond available data."""
         filters = ListEmployeeFilters(page=10, page_size=10)
         total, employees = get_employees(session, filters)
         
@@ -205,7 +183,6 @@ class TestGetEmployees:
         assert len(employees) == 0
 
     def test_filter_by_multiple_statuses(self, session, test_employees):
-        """Test filtering by multiple statuses."""
         filters = ListEmployeeFilters(
             page=1,
             page_size=10,
@@ -218,7 +195,6 @@ class TestGetEmployees:
                   for emp in employees)
     
     def test_filter_by_multiple_company_ids(self, session, test_employees, test_companies):
-        """Test filtering by multiple company IDs."""
         filters = ListEmployeeFilters(
             page=1,
             page_size=10,
@@ -231,7 +207,6 @@ class TestGetEmployees:
                   for emp in employees)
     
     def test_filter_by_multiple_department_ids(self, session, test_employees, test_departments):
-        """Test filtering by multiple department IDs."""
         filters = ListEmployeeFilters(
             page=1,
             page_size=10,
@@ -244,7 +219,6 @@ class TestGetEmployees:
                   for emp in employees)
     
     def test_filter_by_multiple_positions(self, session, test_employees):
-        """Test filtering by multiple positions."""
         filters = ListEmployeeFilters(
             page=1,
             page_size=10,
@@ -257,7 +231,6 @@ class TestGetEmployees:
                   for emp in employees)
     
     def test_filter_by_multiple_locations(self, session, test_employees):
-        """Test filtering by multiple locations."""
         filters = ListEmployeeFilters(
             page=1,
             page_size=10,
@@ -269,10 +242,6 @@ class TestGetEmployees:
         assert all(emp.location in ["Singapore", "Kuala Lumpur"] for emp in employees)
     
     def test_search_by_name(self, session, test_employees):
-        """Test search by first name.
-        
-        Note: "John" matches both "John Doe" (first_name) and "Bob Johnson" (last_name).
-        """
         filters = ListEmployeeFilters(
             page=1,
             page_size=10,
@@ -280,17 +249,12 @@ class TestGetEmployees:
         )
         total, employees = get_employees(session, filters)
         
-        # "John" matches "John Doe" and "Bob Johnson"
         assert total == 2
         names = [f"{emp.first_name} {emp.last_name}" for emp in employees]
         assert "John Doe" in names
         assert "Bob Johnson" in names
 
     def test_search_partial_match(self, session, test_employees):
-        """Test partial search match.
-        
-        Note: "ohn" matches both "John" (first_name) and "Johnson" (last_name).
-        """
         filters = ListEmployeeFilters(
             page=1,
             page_size=10,
@@ -298,14 +262,12 @@ class TestGetEmployees:
         )
         total, employees = get_employees(session, filters)
         
-        # "ohn" matches "John Doe" and "Bob Johnson"
         assert total == 2
         names = [f"{emp.first_name} {emp.last_name}" for emp in employees]
         assert "John Doe" in names
         assert "Bob Johnson" in names
 
     def test_combined_filters_all(self, session, test_employees, test_companies, test_departments):
-        """Test combining all filters."""
         filters = ListEmployeeFilters(
             page=1,
             page_size=10,
@@ -328,7 +290,6 @@ class TestGetEmployees:
         assert emp.first_name == "John"
     
     def test_empty_result(self, session, test_employees):
-        """Test filter that returns no results."""
         filters = ListEmployeeFilters(
             page=1,
             page_size=10,
